@@ -11,7 +11,8 @@ import UserProfilePage from './pages/common/UserProfilePage';
 // Admin Pages
 import ManageUsersPage from './pages/admin/ManageUsersPage';
 import ManageCampaignsPage from './pages/admin/ManageCampaignsPage';
-import CreateVaccinationCampaignPage from './pages/admin/CreateVaccinationCampaignPage'; // New
+import CreateVaccinationCampaignPage from './pages/admin/CreateVaccinationCampaignPage';
+import CreateHealthCheckupCampaignPage from './pages/admin/CreateHealthCheckupCampaignPage';
 import ReportsPage from './pages/admin/ReportsPage';
 import SystemConfigPage from './pages/admin/SystemConfigPage';
 
@@ -27,6 +28,7 @@ import SearchStudentRecordsPage from './pages/yta/SearchStudentRecordsPage';
 
 // Phụ Huynh Pages
 import StudentHealthProfilePage from './pages/phuhuynh/StudentHealthProfilePage';
+import EditStudentHealthProfilePage from './pages/phuhuynh/EditStudentHealthProfilePage'; // New
 import SubmitMedicineRequestPage from './pages/phuhuynh/SubmitMedicineRequestPage';
 import CreateMedicineRequestPage from './pages/phuhuynh/CreateMedicineRequestPage';
 
@@ -78,7 +80,8 @@ function App() {
         {/* Admin Routes */}
         <Route path='/admin/nguoi-dung' element={<ProtectedPageElement element={<ManageUsersPage />} allowedRoles={['admin']} />} />
         <Route path='/admin/chien-dich' element={<ProtectedPageElement element={<ManageCampaignsPage />} allowedRoles={['admin']} />} />
-        <Route path='/admin/chien-dich/tiem-chung/tao-moi' element={<ProtectedPageElement element={<CreateVaccinationCampaignPage />} allowedRoles={['admin', 'y_ta']} />} /> {/* New */}
+        <Route path='/admin/chien-dich/tiem-chung/tao-moi' element={<ProtectedPageElement element={<CreateVaccinationCampaignPage />} allowedRoles={['admin', 'y_ta']} />} />
+        <Route path='/admin/chien-dich/kham-suc-khoe/tao-moi' element={<ProtectedPageElement element={<CreateHealthCheckupCampaignPage />} allowedRoles={['admin', 'y_ta']} />} />
         <Route path='/admin/bao-cao' element={<ProtectedPageElement element={<ReportsPage />} allowedRoles={['admin']} />} />
         <Route path='/admin/cau-hinh' element={<ProtectedPageElement element={<SystemConfigPage />} allowedRoles={['admin']} />} />
 
@@ -94,6 +97,8 @@ function App() {
 
         {/* Phụ Huynh Routes */}
         <Route path='/phu-huynh/ho-so-con' element={<ProtectedPageElement element={<StudentHealthProfilePage />} allowedRoles={['phu_huynh', 'admin']} />} />
+        <Route path='/phu-huynh/ho-so-con/:studentId/chinh-sua' element={<ProtectedPageElement element={<EditStudentHealthProfilePage />} allowedRoles={['phu_huynh', 'admin']} />} /> {/* New */}
+        <Route path='/phu-huynh/ho-so-con/:studentId/tao-moi' element={<ProtectedPageElement element={<EditStudentHealthProfilePage />} allowedRoles={['phu_huynh', 'admin']} />} /> {/* New, uses same edit page */}
         <Route path='/phu-huynh/gui-thuoc' element={<ProtectedPageElement element={<SubmitMedicineRequestPage />} allowedRoles={['phu_huynh', 'admin']} />} />
         <Route path='/phu-huynh/gui-thuoc/tao-moi' element={<ProtectedPageElement element={<CreateMedicineRequestPage />} allowedRoles={['phu_huynh', 'admin']} />} />
       </Route>
