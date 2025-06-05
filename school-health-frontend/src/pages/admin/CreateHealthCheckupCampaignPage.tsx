@@ -30,7 +30,7 @@ const CreateHealthCheckupCampaignPage: React.FC = () => {
   const onSubmit: SubmitHandler<HealthCheckupCampaignFormData> = (data) => {
     if (!currentUser) { alert("Lỗi: Không tìm thấy thông tin người dùng."); return; }
     const newCampaign: ChienDichKhamSucKhoe = {
-      ...data, loaiKham: data.loaiKhamArray, id: \`hcamp${Date.now()}\`,
+      ...data, loaiKham: data.loaiKhamArray, id: 'hcamp' + Date.now(),
       idNguoiTao: currentUser.id, trangThai: "moi_tao" as TrangThaiChienDich, ngayTao: new Date().toISOString(),
     };
     addHealthCheckupCampaign(newCampaign);

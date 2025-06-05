@@ -74,7 +74,7 @@ const EditStudentHealthProfilePage: React.FC = () => {
 
     if (isCreatingNew) {
         const newProfileData: HoSoSucKhoe = {
-            id: \`hsk${studentId}\`,
+            id: 'hsk' + studentId,
             idHocSinh: studentId,
             ...processedData,
             ngayCapNhatCuoi: new Date().toISOString(),
@@ -129,12 +129,12 @@ const EditStudentHealthProfilePage: React.FC = () => {
         <Fieldset legend="Lịch sử tiêm chủng (do phụ huynh khai báo)">
             {tiemChungFields.map((field, index) => (
                 <div key={field.id} className="p-3 border rounded-md mb-3 space-y-2 bg-gray-50 relative">
-                    <input type="text" {...register(\`tiemChung.${index}.tenVaccine\` as const, {required: "Tên vắc xin là bắt buộc"})} placeholder="Tên vắc xin (*)" className="input-style"/>
+                    <input type="text" {...register(\`tiemChung.\${index}.tenVaccine\` as const, {required: "Tên vắc xin là bắt buộc"})} placeholder="Tên vắc xin (*)" className="input-style"/>
                     {errors.tiemChung?.[index]?.tenVaccine && <p className="error-msg text-xs">{errors.tiemChung[index]?.tenVaccine?.message}</p>}
-                    <input type="date" {...register(\`tiemChung.${index}.ngayTiem\` as const, {required: "Ngày tiêm là bắt buộc"})} className="input-style"/>
+                    <input type="date" {...register(\`tiemChung.\${index}.ngayTiem\` as const, {required: "Ngày tiêm là bắt buộc"})} className="input-style"/>
                     {errors.tiemChung?.[index]?.ngayTiem && <p className="error-msg text-xs">{errors.tiemChung[index]?.ngayTiem?.message}</p>}
-                    <input type="text" {...register(\`tiemChung.${index}.lieuLuong\` as const)} placeholder="Liều lượng (VD: 0.5ml)" className="input-style"/>
-                    <textarea {...register(\`tiemChung.${index}.ghiChu\` as const)} placeholder="Ghi chú (VD: Tiêm tại phường)" rows={1} className="input-style"/>
+                    <input type="text" {...register(\`tiemChung.\${index}.lieuLuong\` as const)} placeholder="Liều lượng (VD: 0.5ml)" className="input-style"/>
+                    <textarea {...register(\`tiemChung.\${index}.ghiChu\` as const)} placeholder="Ghi chú (VD: Tiêm tại phường)" rows={1} className="input-style"/>
                     <button type="button" onClick={() => removeTiemChung(index)} className="absolute top-1 right-1 text-red-500 hover:text-red-700 p-1 bg-white rounded-full">
                         <Trash2 size={16}/>
                     </button>
@@ -153,7 +153,7 @@ const EditStudentHealthProfilePage: React.FC = () => {
           <button type="submit" className="btn-primary flex items-center"><Save size={18} className="mr-1"/>Lưu Thay Đổi</button>
         </div>
       </form>
-      <style jsx global>{`
+      <style jsx global>{\`
         .label-style { display: block; margin-bottom: 0.25rem; font-size: 0.875rem; font-weight: 500; color: #374151; }
         .input-style { display: block; width: 100%; padding: 0.5rem; border: 1px solid #D1D5DB; border-radius: 0.375rem; }
         .input-style:focus { outline: 2px solid transparent; outline-offset: 2px; border-color: #3B82F6; }
@@ -161,7 +161,7 @@ const EditStudentHealthProfilePage: React.FC = () => {
         .btn-primary { padding: 0.5rem 1rem; background-color: #2563EB; color: white; border-radius: 0.375rem; font-weight: 500; }
         .btn-secondary { padding: 0.5rem 1rem; border: 1px solid #D1D5DB; border-radius: 0.375rem; font-weight: 500; color: #374151; }
         .btn-secondary-outline { padding: 0.375rem 0.75rem; border: 1px solid #D1D5DB; color: #374151; border-radius: 0.375rem; }
-      `}</style>
+      \`}</style>
     </div>
   );
 };
@@ -177,7 +177,7 @@ const DynamicListField: React.FC<any> = ({title, name, fields, append, remove, r
     <Fieldset legend={title}>
         {fields.map((field: any, index: number) => (
             <div key={field.id} className="flex items-center space-x-2">
-                <input type="text" {...register(\`${name}.${index}.value\` as const, { required: \`${title} không được trống nếu thêm dòng\` })}
+                <input type="text" {...register(\`\${name}.\${index}.value\` as const, { required: \`\${title} không được trống nếu thêm dòng\` })}
                        placeholder={placeholder || "Giá trị"} className="input-style flex-grow"/>
                 <button type="button" onClick={() => remove(index)} className="text-red-500 hover:text-red-700 p-1">
                     <Trash2 size={18}/>

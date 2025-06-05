@@ -53,7 +53,7 @@ const ManageVaccinationPage: React.FC = () => {
         const students = mockAllStudents.filter(s => {
             if (targetAudienceLower.includes('toàn trường') || targetAudienceLower.includes('toàn thể')) return true;
             if (targetAudienceLower.includes(s.lop.toLowerCase())) return true;
-            if (targetAudienceLower.includes(\`khối ${s.lop.charAt(0)}\`)) return true; // e.g. 'Khối 1' matches '1A', '1B'
+            if (targetAudienceLower.includes('khối ' + s.lop.charAt(0))) return true; // e.g. 'Khối 1' matches '1A', '1B'
             return false;
         });
         setEligibleStudents(students);
@@ -116,7 +116,7 @@ const ManageVaccinationPage: React.FC = () => {
 
     const newResult: KetQuaTiemChungHocSinh = {
       ...data,
-      id: \`kq${selectedCampaignId}${editingStudentId}${Date.now()}\`, // Mock ID
+      id: \`kq\${selectedCampaignId}\${editingStudentId}\${Date.now()}\`, // Mock ID
       idChienDichTiemChung: selectedCampaignId,
       idHocSinh: editingStudentId,
       idPhuHuynh: student.idNguoiGiamHoChinh, // Assuming main guardian
@@ -126,7 +126,7 @@ const ManageVaccinationPage: React.FC = () => {
 
     addStudentVaccinationResult(newResult); // Add to mock data (this also console.logs notification)
     setStudentResults(prev => ({...prev, [editingStudentId]: newResult})); // Update local display
-    alert(\`Đã ghi nhận kết quả tiêm chủng cho học sinh ${student.hoTen}.\`);
+    alert(\`Đã ghi nhận kết quả tiêm chủng cho học sinh \${student.hoTen}.\`);
     setEditingStudentId(null); // Close form
   };
 
@@ -187,7 +187,7 @@ const ManageVaccinationPage: React.FC = () => {
                     <div>
                       <p className='font-semibold text-gray-800'>{student.hoTen} - Lớp: {student.lop}</p>
                       {result ? (
-                        <span className={\`text-xs px-2 py-0.5 rounded-full text-white ${
+                        <span className={\`text-xs px-2 py-0.5 rounded-full text-white \${
                             result.trangThaiThamGia === 'da_tiem' ? 'bg-green-500' :
                             result.trangThaiThamGia === 'hoan_tiem' ? 'bg-yellow-500' :
                             result.trangThaiThamGia === 'chong_chi_dinh' ? 'bg-red-500' : 'bg-gray-400'
@@ -247,7 +247,7 @@ const ManageVaccinationPage: React.FC = () => {
           </div>
         </div>
       )}
-      <style jsx global>{`
+      <style jsx global>{\`
         .label-style { display: block; margin-bottom: 0.25rem; font-size: 0.875rem; font-weight: 500; color: #374151; }
         .input-style { display: block; width: 100%; padding: 0.5rem; border: 1px solid #D1D5DB; border-radius: 0.375rem; box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
         .input-style.input-sm { padding: 0.35rem 0.5rem; font-size: 0.875rem; }
@@ -258,7 +258,7 @@ const ManageVaccinationPage: React.FC = () => {
         .btn-secondary:hover { background-color: #F3F4F6; }
         .btn-secondary.text-xs { padding: 0.25rem 0.5rem; }
         .btn-primary.text-xs { padding: 0.25rem 0.5rem; }
-      `}</style>
+      \`}</style>
     </div>
   );
 };

@@ -34,7 +34,7 @@ const ManageCampaignsPage: React.FC = () => {
     if (currentUser && currentUser.vaiTro === "admin") {
       if (updateVaccinationCampaignStatus(id, "da_duyet", currentUser.id)) {
         setVaccinationCampaigns([...mockVaccinationCampaigns]);
-        alert(\`Chiến dịch tiêm chủng ${id} đã được phê duyệt.\`);
+        alert('Chiến dịch tiêm chủng ' + id + ' đã được phê duyệt.');
       }
     } else { alert("Bạn không có quyền phê duyệt chiến dịch."); }
   };
@@ -43,7 +43,7 @@ const ManageCampaignsPage: React.FC = () => {
     if (currentUser && currentUser.vaiTro === "admin") {
       if (updateHealthCheckupCampaignStatus(id, "da_duyet", currentUser.id)) {
         setHealthCheckupCampaigns([...mockHealthCheckupCampaigns]);
-        alert(\`Chiến dịch khám sức khỏe ${id} đã được phê duyệt.\`);
+        alert('Chiến dịch khám sức khỏe ' + id + ' đã được phê duyệt.');
       }
     } else { alert("Bạn không có quyền phê duyệt chiến dịch."); }
   };
@@ -70,13 +70,13 @@ const ManageCampaignsPage: React.FC = () => {
       <div className="mb-6 border-b border-gray-200">
         <nav className="-mb-px flex space-x-8" aria-label="Tabs">
           <button onClick={() => setActiveTab("vaccination")}
-            className={\`${activeTab === "vaccination" ? "border-blue-500 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}
-                        whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center\`}>
+            className={`\${activeTab === "vaccination" ? "border-blue-500 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}
+                        whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center`}>
             <Syringe size={16} className="mr-2" /> Tiêm Chủng ({vaccinationCampaigns.length})
           </button>
           <button onClick={() => setActiveTab("health_checkup")}
-            className={\`${activeTab === "health_checkup" ? "border-teal-500 text-teal-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}
-                        whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center\`}>
+            className={`\${activeTab === "health_checkup" ? "border-teal-500 text-teal-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}
+                        whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center`}>
             <CalendarHeart size={16} className="mr-2" /> Khám Sức Khỏe ({healthCheckupCampaigns.length})
           </button>
         </nav>
@@ -103,7 +103,7 @@ const ManageCampaignsPage: React.FC = () => {
                           {new Date(campaign.thoiGianDuKienBatDau).toLocaleDateString("vi-VN")} -
                           {new Date(campaign.thoiGianDuKienKetThuc).toLocaleDateString("vi-VN")}
                         </td>
-                        <td className="td-cell text-center"><span className={\`px-2 py-1 text-xs font-semibold text-white rounded-full ${statusStyle.color}\`}>{statusStyle.label}</span></td>
+                        <td className="td-cell text-center"><span className={`px-2 py-1 text-xs font-semibold text-white rounded-full \${statusStyle.color}`}>{statusStyle.label}</span></td>
                         <td className="td-cell space-x-2 whitespace-nowrap">
                           <button onClick={() => alert("Xem chi tiết: " + campaign.id)} className="text-blue-600 hover:text-blue-800 text-xs flex items-center"><Eye size={14} className="mr-1"/>Xem</button>
                           {(campaign.trangThai === "moi_tao" || campaign.trangThai === "cho_duyet") &&
@@ -132,7 +132,7 @@ const ManageCampaignsPage: React.FC = () => {
                         <td className="td-cell text-xs">{campaign.loaiKham.join(", ")}</td>
                         <td className="td-cell text-xs">{campaign.doiTuongApDung}</td>
                         <td className="td-cell text-xs">{new Date(campaign.thoiGianDuKien).toLocaleDateString("vi-VN")}</td>
-                        <td className="td-cell text-center"><span className={\`px-2 py-1 text-xs font-semibold text-white rounded-full ${statusStyle.color}\`}>{statusStyle.label}</span></td>
+                        <td className="td-cell text-center"><span className={`px-2 py-1 text-xs font-semibold text-white rounded-full \${statusStyle.color}`}>{statusStyle.label}</span></td>
                         <td className="td-cell space-x-2 whitespace-nowrap">
                           <button onClick={() => alert("Xem chi tiết: " + campaign.id)} className="text-blue-600 hover:text-blue-800 text-xs flex items-center"><Eye size={14} className="mr-1"/>Xem</button>
                            {(campaign.trangThai === "moi_tao" || campaign.trangThai === "cho_duyet") &&

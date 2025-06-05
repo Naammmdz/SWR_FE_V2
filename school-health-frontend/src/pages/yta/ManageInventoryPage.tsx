@@ -39,9 +39,9 @@ const ManageInventoryPage: React.FC = () => {
     }
 
     if(success) {
-        console.log(\`Stock for ${currentItem.name} adjusted by ${quantityChange}. New stock: ${currentItem.currentStock + quantityChange}\`);
+        console.log('Stock for ' + currentItem.name + ' adjusted by ' + quantityChange + '. New stock: ' + (currentItem.currentStock + quantityChange));
     } else {
-        console.error(\`Failed to update stock for ${currentItem.name}\`);
+        console.error(\`Failed to update stock for \${currentItem.name}\`);
     }
     setShowAdjustModal(false);
     setCurrentItem(null);
@@ -86,8 +86,8 @@ const ManageInventoryPage: React.FC = () => {
             </thead>
             <tbody className='bg-white divide-y divide-gray-200'>
               {medicines.map(thuoc => (
-                <tr key={thuoc.id} className={\`hover:bg-gray-50 ${thuoc.soLuongTonKho < (thuoc.nguongCanhBaoTonKho || 0) ? 'bg-red-50' : ''}\`}>
-                  <td className='td-cell font-medium'>{thuoc.tenThuoc} {thuoc.hamLuong && \`(${thuoc.hamLuong})\`}
+                <tr key={thuoc.id} className={\`hover:bg-gray-50 \${thuoc.soLuongTonKho < (thuoc.nguongCanhBaoTonKho || 0) ? 'bg-red-50' : ''}\`}>
+                  <td className='td-cell font-medium'>{thuoc.tenThuoc} {thuoc.hamLuong && \`(\${thuoc.hamLuong})\`}
                     {thuoc.soLuongTonKho < (thuoc.nguongCanhBaoTonKho || 0) && <AlertTriangle size={14} className='inline ml-1 text-red-500' title='Dưới ngưỡng cảnh báo'/>}
                   </td>
                   <td className='td-cell'>{thuoc.maThuoc || 'N/A'}</td>
@@ -122,7 +122,7 @@ const ManageInventoryPage: React.FC = () => {
             </thead>
             <tbody className='bg-white divide-y divide-gray-200'>
               {supplies.map(vatTu => (
-                <tr key={vatTu.id} className={\`hover:bg-gray-50 ${vatTu.soLuongTonKho < (vatTu.nguongCanhBaoTonKho || 0) ? 'bg-red-50' : ''}\`}>
+                <tr key={vatTu.id} className={\`hover:bg-gray-50 \${vatTu.soLuongTonKho < (vatTu.nguongCanhBaoTonKho || 0) ? 'bg-red-50' : ''}\`}>
                   <td className='td-cell font-medium'>{vatTu.tenVatTu}
                      {vatTu.soLuongTonKho < (vatTu.nguongCanhBaoTonKho || 0) && <AlertTriangle size={14} className='inline ml-1 text-red-500' title='Dưới ngưỡng cảnh báo'/>}
                   </td>
@@ -176,12 +176,12 @@ const ManageInventoryPage: React.FC = () => {
           </div>
         </div>
       )}
-      <style jsx global>{`
+      <style jsx global>{\`
         .th-cell { padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; font-weight: 500; color: #4B5563; text-transform: uppercase; letter-spacing: 0.05em; }
         .td-cell { padding: 0.75rem 1rem; white-space: nowrap; font-size: 0.875rem; color: #374151; }
         .input-style { display: block; width: 100%; padding: 0.5rem; border: 1px solid #D1D5DB; border-radius: 0.375rem; box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
         .input-style:focus { outline: 2px solid transparent; outline-offset: 2px; border-color: #3B82F6; box-shadow: 0 0 0 2px #BFDBFE; }
-      `}</style>
+      \`}</style>
     </div>
   );
 };

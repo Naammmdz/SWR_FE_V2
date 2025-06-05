@@ -83,7 +83,7 @@ const StudentHealthProfilePage: React.FC = () => {
       {!loading && selectedChildId && !healthProfile &&
         <div className='text-center p-6 border rounded-md bg-yellow-50'>
             <p className='text-yellow-700'>Chưa có hồ sơ sức khỏe cho {selectedChild?.hoTen || 'học sinh này'}.</p>
-            <button onClick={() => navigate(\`/phu-huynh/ho-so-con/${selectedChildId}/tao-moi\`)} className='btn-primary mt-3'>
+            <button onClick={() => navigate('/phu-huynh/ho-so-con/' + selectedChildId + '/tao-moi')} className='btn-primary mt-3'>
                 Tạo Hồ Sơ Mới
             </button>
         </div>
@@ -94,7 +94,7 @@ const StudentHealthProfilePage: React.FC = () => {
           <div className='flex justify-between items-center mb-4'>
             <h3 className='text-2xl font-semibold text-gray-800'>Thông tin của: {selectedChild.hoTen}</h3>
             <button
-              onClick={() => navigate(\`/phu-huynh/ho-so-con/${selectedChildId}/chinh-sua\`)}
+              onClick={() => navigate('/phu-huynh/ho-so-con/' + selectedChildId + '/chinh-sua')}
               className='btn-primary-outline flex items-center text-sm'
             >
               <Edit size={16} className='mr-1'/> Chỉnh sửa hồ sơ
@@ -133,7 +133,7 @@ const StudentHealthProfilePage: React.FC = () => {
             </CollapsibleSection>
 
             <InfoRow icon={<StickyNote/>} label='Ghi chú khác:' value={healthProfile.ghiChuKhac || 'Không có'} multiline/>
-            <InfoRow label='Cập nhật lần cuối:' value={\`${new Date(healthProfile.ngayCapNhatCuoi).toLocaleString('vi-VN')} bởi (ID: ${healthProfile.idNguoiCapNhatCuoi})\`} />
+            <InfoRow label='Cập nhật lần cuối:' value={new Date(healthProfile.ngayCapNhatCuoi).toLocaleString('vi-VN') + ' bởi (ID: ' + healthProfile.idNguoiCapNhatCuoi + ')'} />
           </div>
         </div>
       )}

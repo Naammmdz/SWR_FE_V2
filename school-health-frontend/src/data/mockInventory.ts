@@ -25,7 +25,7 @@ export const updateMockMedicineStock = (id: string, quantityChange: number, reas
   if (medicine) {
     medicine.soLuongTonKho += quantityChange; // quantityChange is negative for issuance
     mockInventoryLog.unshift({
-      id: \`log${Date.now()}\`,
+      id: 'log' + Date.now(),
       idSanPham: id,
       loaiSanPham: 'thuoc',
       tenSanPham: medicine.tenThuoc,
@@ -35,7 +35,7 @@ export const updateMockMedicineStock = (id: string, quantityChange: number, reas
       idNguoiXuat: userId || 'yta_unknown',
       lyDoXuat: reason,
       idSuKienYTeLienQuan: eventId,
-      ghiChu: quantityChange < 0 ? \`Xuất ${reason}\` : \`Nhập ${reason}\`
+      ghiChu: quantityChange < 0 ? \`Xuất \${reason}\` : \`Nhập \${reason}\`
     });
     return true;
   }
@@ -47,7 +47,7 @@ export const updateMockSupplyStock = (id: string, quantityChange: number, reason
   if (supply) {
     supply.soLuongTonKho += quantityChange;
      mockInventoryLog.unshift({
-      id: \`log${Date.now()}\`,
+      id: 'log' + Date.now(),
       idSanPham: id,
       loaiSanPham: 'vat_tu_y_te',
       tenSanPham: supply.tenVatTu,
@@ -57,7 +57,7 @@ export const updateMockSupplyStock = (id: string, quantityChange: number, reason
       idNguoiXuat: userId || 'yta_unknown',
       lyDoXuat: reason,
       idSuKienYTeLienQuan: eventId,
-      ghiChu: quantityChange < 0 ? \`Xuất ${reason}\` : \`Nhập ${reason}\`
+      ghiChu: quantityChange < 0 ? \`Xuất \${reason}\` : \`Nhập \${reason}\`
     });
     return true;
   }

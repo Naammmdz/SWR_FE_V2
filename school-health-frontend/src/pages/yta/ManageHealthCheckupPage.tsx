@@ -42,7 +42,7 @@ const ManageHealthCheckupPage: React.FC = () => {
         const students = mockAllStudents.filter(s => {
             if (targetAudienceLower.includes('toàn trường') || targetAudienceLower.includes('toàn thể')) return true;
             if (targetAudienceLower.includes(s.lop.toLowerCase())) return true;
-            if (targetAudienceLower.includes(\`khối ${s.lop.charAt(0)}\`)) return true;
+            if (targetAudienceLower.includes('khối ' + s.lop.charAt(0))) return true;
             return false;
         });
         setEligibleStudents(students);
@@ -100,7 +100,7 @@ const ManageHealthCheckupPage: React.FC = () => {
     }
 
     const newResult: KetQuaKhamSucKhoeHocSinh = {
-      id: \`kqh${selectedCampaignId}${editingStudentId}${Date.now()}\`,
+      id: \`kqh\${selectedCampaignId}\${editingStudentId}\${Date.now()}\`,
       idChienDichKhamSucKhoe: selectedCampaignId,
       idHocSinh: editingStudentId,
       ngayKham: new Date(data.ngayKham).toISOString(),
@@ -114,7 +114,7 @@ const ManageHealthCheckupPage: React.FC = () => {
 
     addStudentHealthCheckupResult(newResult);
     setStudentResults(prev => ({...prev, [editingStudentId]: newResult}));
-    alert(\`Đã ghi nhận kết quả khám sức khỏe cho học sinh ${student.hoTen}.\`);
+    alert(\`Đã ghi nhận kết quả khám sức khỏe cho học sinh \${student.hoTen}.\`);
     setEditingStudentId(null);
   };
 
@@ -210,7 +210,7 @@ const ManageHealthCheckupPage: React.FC = () => {
                 </div>);})}
           </div>
         </div>)}
-      <style jsx global>{`
+      <style jsx global>{\`
         .label-style { display: block; margin-bottom: 0.25rem; font-size: 0.875rem; font-weight: 500; color: #374151; }
         .input-style { display: block; width: 100%; padding: 0.5rem; border: 1px solid #D1D5DB; border-radius: 0.375rem; box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
         .input-style.input-sm { padding: 0.35rem 0.5rem; font-size: 0.875rem; }
@@ -221,6 +221,6 @@ const ManageHealthCheckupPage: React.FC = () => {
         .btn-secondary { padding: 0.5rem 1rem; border: 1px solid #D1D5DB; border-radius: 0.375rem; font-weight: 500; color: #374151; }
         .btn-secondary:hover { background-color: #F3F4F6; }
         .btn-secondary.text-xs { padding: 0.25rem 0.5rem; }
-      `}</style>
+      \`}</style>
     </div>);};
 export default ManageHealthCheckupPage;

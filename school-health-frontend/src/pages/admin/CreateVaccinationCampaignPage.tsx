@@ -32,7 +32,7 @@ const CreateVaccinationCampaignPage: React.FC = () => {
     }
     const newCampaign: ChienDichTiemChung = {
       ...data,
-      id: \`vcamp${Date.now()}\`, // Mock ID
+      id: 'vcamp' + Date.now(), // Mock ID
       idNguoiTao: currentUser.id,
       trangThai: 'moi_tao' as TrangThaiChienDich,
       ngayTao: new Date().toISOString(),
