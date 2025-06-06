@@ -1,0 +1,5 @@
+/app/school-health-backend/src/test/java/com/example/schoolhealth/services/HocSinhServiceImplTest.java
+/app/school-health-backend/src/test/java/com/example/schoolhealth/services/NguoiDungServiceImplTest.java
+/app/school-health-backend/src/test/java/com/example/schoolhealth/controllers/HocSinhControllerTest.java
+/app/school-health-backend/src/test/java/com/example/schoolhealth/controllers/NguoiDungControllerTest.java
+/app/school-health-backend/src/test/java/com/example/schoolhealth/SchoolHealthBackendApplicationTests.java

@@ -33,7 +33,7 @@ public class KetQuaKhamSucKhoeHocSinh {
     private LocalDate ngayKham;
 
     @Type(JsonType.class) // Using JsonType for Map<String, Object>
-    @Column(columnDefinition = "jsonb") // Or "json" depending on DB
+    @Column(columnDefinition = "JSON") // Use H2's JSON alias, which Hypersistence might map correctly
     private Map<String, Object> ketQuaChiTiet; // Store as JSON
 
     @Lob
