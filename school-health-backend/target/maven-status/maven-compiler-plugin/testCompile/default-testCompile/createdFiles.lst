@@ -1,5 +1,9 @@
 com/example/schoolhealth/services/NguoiDungServiceImplTest.class
 com/example/schoolhealth/services/HocSinhServiceImplTest.class
 com/example/schoolhealth/controllers/HocSinhControllerTest.class
+com/example/schoolhealth/controllers/YeuCauGuiThuocControllerTest.class
+com/example/schoolhealth/services/YeuCauGuiThuocServiceImplTest.class
 com/example/schoolhealth/controllers/NguoiDungControllerTest.class
+com/example/schoolhealth/services/HoSoSucKhoeServiceImplTest.class
+com/example/schoolhealth/controllers/HoSoSucKhoeControllerTest.class
 com/example/schoolhealth/SchoolHealthBackendApplicationTests.class

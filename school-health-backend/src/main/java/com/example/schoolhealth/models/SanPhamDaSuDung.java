@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SanPhamDaSuDung {
+    private String idSanPham; // ID of Thuoc or VatTuYTe
     // Not linking to Thuoc/VatTuYTe entities directly yet to keep it simple
     // private Long idSanPham; // Could be ThuocId or VatTuYTeId
     private String tenSanPham; // Store name directly for now

@@ -46,4 +46,9 @@ public interface NguoiDungMapper {
     public static String localDateTimeToString(LocalDateTime date) {
         return date != null ? date.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null;
     }
+
+    @Named("stringToLocalDateTime")
+    public static LocalDateTime stringToLocalDateTime(String dateTimeString) {
+        return dateTimeString != null ? LocalDateTime.parse(dateTimeString, DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null;
+    }
 }

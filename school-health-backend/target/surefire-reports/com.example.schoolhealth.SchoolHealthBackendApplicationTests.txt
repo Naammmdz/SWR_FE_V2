@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.example.schoolhealth.SchoolHealthBackendApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.588 s -- in com.example.schoolhealth.SchoolHealthBackendApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.294 s -- in com.example.schoolhealth.SchoolHealthBackendApplicationTests

@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface HoSoSucKhoeRepository extends JpaRepository<HoSoSucKhoe, Long> {
     Optional<HoSoSucKhoe> findByIdHocSinh(Long idHocSinh);
+    boolean existsByIdHocSinh(Long idHocSinh);
 }
