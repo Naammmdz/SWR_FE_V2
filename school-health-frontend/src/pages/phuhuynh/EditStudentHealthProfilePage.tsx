@@ -1,17 +1,53 @@
-import React, { useEffect, useState } from "react";
-import { useForm, Controller, SubmitHandler, useFieldArray } from "react-hook-form";
-import { useNavigate, useParams, Link } from "react-router-dom";
-import { HoSoSucKhoe, ThongTinTiemChung } from "../../types";
-import { useAuth } from "../../contexts/AuthContext";
-import { getHealthProfileByStudentId, updateHealthProfile, addHealthProfile } from "../../data/mockHealthProfiles";
-import { Save, XSquare, PlusCircle, Trash2 } from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import { useForm, useFieldArray } from 'react-hook-form';
+import type { SubmitHandler } from 'react-hook-form';
+import { useNavigate, useParams, Link } from 'react-router-dom';
+import type { HoSoSucKhoe } from '../../types';
+import { useAuth } from '../../contexts/AuthContext';
+import { 
+  getHealthProfileByStudentId, 
+  updateHealthProfile, 
+  addHealthProfile 
+} from '../../data/mockHealthProfiles';
+import { Save, XSquare, PlusCircle, Trash2 } from 'lucide-react';
+import './EditStudentHealthProfilePage.css';
+import type { UseFormRegister, UseFieldArrayAppend, UseFieldArrayRemove, FieldErrors } from 'react-hook-form';
 
-type HealthProfileFormData = Omit<HoSoSucKhoe, "id" | "idHocSinh" | "ngayCapNhatCuoi" | "idNguoiCapNhatCuoi"> & {
+interface ThiLucRecord {
+    matTrai: string;
+    matPhai: string;
+    ngayKham: string;
+    ghiChu: string;
+}
+
+interface ThinhLucRecord {
+    taiTrai: string;
+    taiPhai: string;
+    ngayKham: string;
+    ghiChu: string;
+}
+
+interface TiemChungRecord {
+    tenVaccine: string;
+    ngayTiem: string;
+    lieuLuong: string;
+    ghiChu: string;
+}
+
+interface HealthProfileFormData {
+    nhomMau: BloodGroup;
     diUngTemp: {value: string}[];
     benhManTinhTemp: {value: string}[];
-};
+    tienSuDieuTri: string;
+    thiLuc: ThiLucRecord;
+    thinhLuc: ThinhLucRecord;
+    tiemChung: TiemChungRecord[];
+    ghiChuKhac: string;
+}
 
-const bloodGroupOptions = ["", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+type BloodGroupOption = "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
+type BloodGroup = BloodGroupOption | "";
+const bloodGroupOptions: readonly BloodGroup[] = ["", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] as const;
 
 const EditStudentHealthProfilePage: React.FC = () => {
   const { currentUser } = useAuth();
@@ -20,7 +56,7 @@ const EditStudentHealthProfilePage: React.FC = () => {
   const [profile, setProfile] = useState<HoSoSucKhoe | null | undefined>(null);
   const [isCreatingNew, setIsCreatingNew] = useState(false);
 
-  const { register, control, handleSubmit, reset, setValue, formState: { errors } } = useForm<HealthProfileFormData>({
+  const { register, control, handleSubmit, reset, formState: { errors } } = useForm<HealthProfileFormData>({
     defaultValues: {
       nhomMau: "", diUngTemp: [], benhManTinhTemp: [], tienSuDieuTri: "",
       thiLuc: { matTrai: "", matPhai: "", ngayKham: "", ghiChu: "" },
@@ -59,15 +95,15 @@ const EditStudentHealthProfilePage: React.FC = () => {
   }, [studentId, reset]);
 
   const onSubmit: SubmitHandler<HealthProfileFormData> = (data) => {
-    if (!currentUser || !studentId) { alert("Lỗi: Thiếu thông tin người dùng hoặc học sinh."); return; }
-
-    const processedData: Partial<HoSoSucKhoe> = {
-        ...data,
+    if (!currentUser || !studentId) { alert("Lỗi: Thiếu thông tin người dùng hoặc học sinh."); return; }    const processedData: Partial<HoSoSucKhoe> = {
+        nhomMau: data.nhomMau as BloodGroupOption | undefined,
         diUng: data.diUngTemp.map(d => d.value).filter(d => d && d.trim() !== ""),
         benhManTinh: data.benhManTinhTemp.map(b => b.value).filter(b => b && b.trim() !== ""),
         thiLuc: data.thiLuc?.ngayKham ? {...data.thiLuc, ngayKham: new Date(data.thiLuc.ngayKham).toISOString()} : data.thiLuc,
         thinhLuc: data.thinhLuc?.ngayKham ? {...data.thinhLuc, ngayKham: new Date(data.thinhLuc.ngayKham).toISOString()} : data.thinhLuc,
         tiemChung: data.tiemChung?.map(tc => ({...tc, ngayTiem: tc.ngayTiem ? new Date(tc.ngayTiem).toISOString() : new Date(0).toISOString() })).filter(tc => tc.tenVaccine?.trim() !== ""),
+        tienSuDieuTri: data.tienSuDieuTri,
+        ghiChuKhac: data.ghiChuKhac
     };
     delete (processedData as any).diUngTemp;
     delete (processedData as any).benhManTinhTemp;
@@ -86,7 +122,7 @@ const EditStudentHealthProfilePage: React.FC = () => {
         updateHealthProfile(profile.id, processedData, currentUser.id);
         alert("Hồ sơ sức khỏe đã được cập nhật!");
     }
-    navigate(\`/phu-huynh/ho-so-con\`);
+    navigate('/phu-huynh/ho-so-con');
   };
 
   if (!currentUser || !studentId) return <p className="p-4">Đang tải hoặc có lỗi...</p>;
@@ -129,12 +165,11 @@ const EditStudentHealthProfilePage: React.FC = () => {
         <Fieldset legend="Lịch sử tiêm chủng (do phụ huynh khai báo)">
             {tiemChungFields.map((field, index) => (
                 <div key={field.id} className="p-3 border rounded-md mb-3 space-y-2 bg-gray-50 relative">
-                    <input type="text" {...register(\`tiemChung.\${index}.tenVaccine\` as const, {required: "Tên vắc xin là bắt buộc"})} placeholder="Tên vắc xin (*)" className="input-style"/>
-                    {errors.tiemChung?.[index]?.tenVaccine && <p className="error-msg text-xs">{errors.tiemChung[index]?.tenVaccine?.message}</p>}
-                    <input type="date" {...register(\`tiemChung.\${index}.ngayTiem\` as const, {required: "Ngày tiêm là bắt buộc"})} className="input-style"/>
+                    <input type="text" {...register(`tiemChung.${index}.tenVaccine` as const, {required: "Tên vắc xin là bắt buộc"})} placeholder="Tên vắc xin (*)" className="input-style"/>
+                    {errors.tiemChung?.[index]?.tenVaccine && <p className="error-msg text-xs">{errors.tiemChung[index]?.tenVaccine?.message}</p>}                    <input type="date" {...register(`tiemChung.${index}.ngayTiem` as const, {required: "Ngày tiêm là bắt buộc"})} className="input-style"/>
                     {errors.tiemChung?.[index]?.ngayTiem && <p className="error-msg text-xs">{errors.tiemChung[index]?.ngayTiem?.message}</p>}
-                    <input type="text" {...register(\`tiemChung.\${index}.lieuLuong\` as const)} placeholder="Liều lượng (VD: 0.5ml)" className="input-style"/>
-                    <textarea {...register(\`tiemChung.\${index}.ghiChu\` as const)} placeholder="Ghi chú (VD: Tiêm tại phường)" rows={1} className="input-style"/>
+                    <input type="text" {...register(`tiemChung.${index}.lieuLuong` as const)} placeholder="Liều lượng (VD: 0.5ml)" className="input-style"/>
+                    <textarea {...register(`tiemChung.${index}.ghiChu` as const)} placeholder="Ghi chú (VD: Tiêm tại phường)" rows={1} className="input-style"/>
                     <button type="button" onClick={() => removeTiemChung(index)} className="absolute top-1 right-1 text-red-500 hover:text-red-700 p-1 bg-white rounded-full">
                         <Trash2 size={16}/>
                     </button>
@@ -152,17 +187,7 @@ const EditStudentHealthProfilePage: React.FC = () => {
           <Link to="/phu-huynh/ho-so-con" className="btn-secondary flex items-center"><XSquare size={18} className="mr-1"/>Hủy</Link>
           <button type="submit" className="btn-primary flex items-center"><Save size={18} className="mr-1"/>Lưu Thay Đổi</button>
         </div>
-      </form>
-      <style jsx global>{\`
-        .label-style { display: block; margin-bottom: 0.25rem; font-size: 0.875rem; font-weight: 500; color: #374151; }
-        .input-style { display: block; width: 100%; padding: 0.5rem; border: 1px solid #D1D5DB; border-radius: 0.375rem; }
-        .input-style:focus { outline: 2px solid transparent; outline-offset: 2px; border-color: #3B82F6; }
-        .error-msg { color: #EF4444; font-size: 0.75rem; margin-top: 0.25rem; }
-        .btn-primary { padding: 0.5rem 1rem; background-color: #2563EB; color: white; border-radius: 0.375rem; font-weight: 500; }
-        .btn-secondary { padding: 0.5rem 1rem; border: 1px solid #D1D5DB; border-radius: 0.375rem; font-weight: 500; color: #374151; }
-        .btn-secondary-outline { padding: 0.375rem 0.75rem; border: 1px solid #D1D5DB; color: #374151; border-radius: 0.375rem; }
-      \`}</style>
-    </div>
+      </form>    </div>
   );
 };
 
@@ -173,18 +198,29 @@ const Fieldset: React.FC<{legend: string, children: React.ReactNode}> = ({legend
     </fieldset>
 );
 
-const DynamicListField: React.FC<any> = ({title, name, fields, append, remove, register, errors, placeholder}) => (
+interface DynamicListFieldProps {
+  title: string;
+  name: 'diUngTemp' | 'benhManTinhTemp';
+  fields: Array<{ id: string }>;
+  append: UseFieldArrayAppend<HealthProfileFormData>;
+  remove: UseFieldArrayRemove;
+  register: UseFormRegister<HealthProfileFormData>;
+  errors: FieldErrors<HealthProfileFormData>;
+  placeholder?: string;
+}
+
+const DynamicListField: React.FC<DynamicListFieldProps> = ({title, name, fields, append, remove, register, errors, placeholder}) => (
     <Fieldset legend={title}>
         {fields.map((field: any, index: number) => (
             <div key={field.id} className="flex items-center space-x-2">
-                <input type="text" {...register(\`\${name}.\${index}.value\` as const, { required: \`\${title} không được trống nếu thêm dòng\` })}
+                <input type="text" {...register(`${name}.${index}.value` as const, { required: `${title} không được trống nếu thêm dòng` })}
                        placeholder={placeholder || "Giá trị"} className="input-style flex-grow"/>
                 <button type="button" onClick={() => remove(index)} className="text-red-500 hover:text-red-700 p-1">
                     <Trash2 size={18}/>
                 </button>
             </div>
         ))}
-        {errors[name] && <p className="error-msg text-xs">Có lỗi trong danh sách {title.toLowerCase()}.</p>}
+        {Array.isArray(errors[name]) && errors[name]?.length > 0 && <p className="error-msg text-xs">Có lỗi trong danh sách {title.toLowerCase()}.</p>}
         <button type="button" onClick={() => append({value: ""})} className="btn-secondary-outline text-sm flex items-center">
             <PlusCircle size={16} className="mr-1"/> Thêm {title.toLowerCase()}
         </button>

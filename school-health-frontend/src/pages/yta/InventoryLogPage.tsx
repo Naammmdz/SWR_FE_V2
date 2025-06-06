@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ListOrdered, ArrowLeft } from 'lucide-react';
-import { NhatKyXuatKho } from '../../types';
+import type { NhatKyXuatKho } from '../../types';
 import { mockInventoryLog } from '../../data/mockInventory'; // Assuming logs are also in mockInventory
+import './InventoryLogPage.css';
 
 const InventoryLogPage: React.FC = () => {
-  const [logs, setLogs] = useState<NhatKyXuatKho[]>(mockInventoryLog);
+  const [logs] = useState<NhatKyXuatKho[]>(mockInventoryLog);
 
   return (
     <div className='p-6 bg-white shadow-lg rounded-lg'>
@@ -49,14 +50,10 @@ const InventoryLogPage: React.FC = () => {
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+          </table>        </div>
       )}
-       <style jsx global>{`
-        .th-cell { padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; font-weight: 500; color: #4B5563; text-transform: uppercase; letter-spacing: 0.05em; }
-        .td-cell { padding: 0.75rem 1rem; font-size: 0.875rem; color: #374151; }
-      `}</style>
     </div>
   );
 };
+
 export default InventoryLogPage;

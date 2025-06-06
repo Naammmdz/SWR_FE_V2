@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircle, Eye } from 'lucide-react';
-import { YeuCauGuiThuoc, TrangThaiYeuCauThuoc } from '../../types'; // Assuming types are defined
+import type { YeuCauGuiThuoc, TrangThaiYeuCauThuoc } from '../../types';
 import { useAuth } from '../../contexts/AuthContext'; // To get current user (parent)
 
 // Mock data for initial display
@@ -87,13 +87,8 @@ const getStatusColor = (status: TrangThaiYeuCauThuoc): string => {
 const SubmitMedicineRequestPage: React.FC = () => {
   const { currentUser } = useAuth();
   // In a real app, fetch requests for the current user
-  const [requests, setRequests] = useState<YeuCauGuiThuoc[]>(mockMedicineRequests.filter(r => r.idPhuHuynhGui === (currentUser?.id || 'ph001')));
-
-  // Add new request (this would be handled by the form submission later)
-  // For now, this function is not used here but in the Create page.
-  const addRequest = (newRequest: YeuCauGuiThuoc) => {
-    setRequests(prev => [newRequest, ...prev]);
-  };
+  const [requests] = useState<YeuCauGuiThuoc[]>(mockMedicineRequests.filter(r => r.idPhuHuynhGui === (currentUser?.id || 'ph001')));
+  // Add new request functionality would be handled by the form submission in Create page
 
   if (!currentUser || currentUser.vaiTro !== 'phu_huynh') {
      return <div className='p-6 text-red-500'>Bạn không có quyền truy cập vào trang này.</div>;

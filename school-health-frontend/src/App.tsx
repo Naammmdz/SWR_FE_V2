@@ -33,7 +33,7 @@ import SubmitMedicineRequestPage from './pages/phuhuynh/SubmitMedicineRequestPag
 import CreateMedicineRequestPage from './pages/phuhuynh/CreateMedicineRequestPage';
 
 import { useAuth } from './contexts/AuthContext';
-import { VaiTroNguoiDung } from './types';
+import type { VaiTroNguoiDung } from './types';
 
 interface ProtectedRouteProps {
   allowedRoles?: VaiTroNguoiDung[];

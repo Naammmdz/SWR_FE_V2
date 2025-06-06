@@ -1,3 +1,4 @@
+// filepath: c:\Users\tagia\OneDrive\Máy tính\SWR_FE_V2\school-health-frontend\src\pages\common\NotificationsPage.tsx
 import React, { useState } from 'react';
 import type { ThongBao, LoaiThongBao } from '../../types';
 import { 

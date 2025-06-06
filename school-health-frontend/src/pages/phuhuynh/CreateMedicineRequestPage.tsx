@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useForm, Controller, SubmitHandler, useFieldArray } from 'react-hook-form';
+import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import type { SubmitHandler } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
-import { YeuCauGuiThuoc, HocSinh, TrangThaiYeuCauThuoc } from '../../types';
+import type { YeuCauGuiThuoc, HocSinh, TrangThaiYeuCauThuoc } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
 import { PlusCircle, Trash2, CalendarDays, Clock } from 'lucide-react';
+import './CreateMedicineRequestPage.css';
 
 // Mock data for parent's children
 const mockUserChildren: HocSinh[] = [
@@ -20,7 +22,7 @@ const CreateMedicineRequestPage: React.FC = () => {
   const navigate = useNavigate();
   const [userChildren, setUserChildren] = useState<HocSinh[]>([]);
 
-  const { register, control, handleSubmit, formState: { errors }, watch, setValue } = useForm<MedicineRequestFormData>({
+  const { register, control, handleSubmit, formState: { errors }, setValue } = useForm<MedicineRequestFormData>({
     defaultValues: {
       idHocSinh: '',
       tenThuoc: '',
@@ -232,26 +234,10 @@ const CreateMedicineRequestPage: React.FC = () => {
             type='submit'
             className='px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
           >
-            Gửi Yêu Cầu
+                      Gửi Yêu Cầu
           </button>
         </div>
       </form>
-      <style jsx global>{`
-        .input-style {
-          display: block;
-          width: 100%;
-          padding: 0.5rem;
-          border: 1px solid #D1D5DB; /* gray-300 */
-          border-radius: 0.375rem; /* rounded-md */
-          box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-        .input-style:focus {
-          outline: 2px solid transparent;
-          outline-offset: 2px;
-          border-color: #3B82F6; /* blue-500 */
-          box-shadow: 0 0 0 2px #BFDBFE; /* ring-blue-500 with opacity */
-        }
-      `}</style>
     </div>
   );
 };

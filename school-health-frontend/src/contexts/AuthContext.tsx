@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { NguoiDung, VaiTroNguoiDung } from '../types'; // Assuming NguoiDung and VaiTroNguoiDung are in types/index.ts
+import React, { createContext, useContext, useState } from 'react';
+import type { ReactNode } from 'react';
+import type { NguoiDung, VaiTroNguoiDung } from '../types';
 
 interface AuthContextType {
   currentUser: NguoiDung | null;

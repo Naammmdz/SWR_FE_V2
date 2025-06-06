@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import { Eye, CheckCircle, PackageCheck, Pill } from 'lucide-react';
-import { YeuCauGuiThuoc, TrangThaiYeuCauThuoc, NguoiDung, HocSinh } from '../../types';
+import type { YeuCauGuiThuoc, TrangThaiYeuCauThuoc, NguoiDung, HocSinh } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
 
 const allMockMedicineRequests: YeuCauGuiThuoc[] = [
@@ -73,16 +72,15 @@ const ManageMedicineRequestsPage: React.FC = () => {
     console.log(`Request ${reqId} status updated to ${newStatus}. Notifying parent ${requests.find(r=>r.id===reqId)?.idPhuHuynhGui}`);
     setSelectedRequest(prev => prev && prev.id === reqId ? {...prev, trangThai: newStatus, idYTaXuLy: yTaId || prev.idYTaXuLy, ngayCapNhat: new Date().toISOString()} : prev);
   };
-
   const handleRecordAdministration = (reqId: string, scheduleItemId: string, yTaId: string) => {
      setRequests(prevRequests => {
         return prevRequests.map(req => {
             if (req.id === reqId) {
                 const updatedLichSu = req.lichSuUongThuoc?.map(ls =>
-                    ls.id === scheduleItemId ? {...ls, trangThai: 'da_cho_uong', idYTaChoUong: yTaId, thoiGianThucTe: new Date().toISOString()} : ls
+                    ls.id === scheduleItemId ? {...ls, trangThai: 'da_cho_uong' as const, idYTaChoUong: yTaId, thoiGianThucTe: new Date().toISOString()} : ls
                 );
                 const allAdministered = updatedLichSu?.every(ls => ls.trangThai === 'da_cho_uong');
-                const newStatus = allAdministered ? 'hoan_thanh' : 'da_cho_uong_mot_phan';
+                const newStatus: TrangThaiYeuCauThuoc = allAdministered ? 'hoan_thanh' : 'da_cho_uong_mot_phan';
                 console.log(`Request ${reqId}, item ${scheduleItemId} administered. New status ${newStatus}`);
                 return { ...req, lichSuUongThuoc: updatedLichSu, trangThai: newStatus, ngayCapNhat: new Date().toISOString() };
             }
@@ -92,10 +90,10 @@ const ManageMedicineRequestsPage: React.FC = () => {
      setSelectedRequest(prev => {
         if (!prev || prev.id !== reqId) return prev;
         const updatedLichSu = prev.lichSuUongThuoc?.map(ls =>
-            ls.id === scheduleItemId ? {...ls, trangThai: 'da_cho_uong', idYTaChoUong: yTaId, thoiGianThucTe: new Date().toISOString()} : ls
+            ls.id === scheduleItemId ? {...ls, trangThai: 'da_cho_uong' as const, idYTaChoUong: yTaId, thoiGianThucTe: new Date().toISOString()} : ls
         );
         const allAdministered = updatedLichSu?.every(ls => ls.trangThai === 'da_cho_uong');
-        const newStatus = allAdministered ? 'hoan_thanh' : 'da_cho_uong_mot_phan';
+        const newStatus: TrangThaiYeuCauThuoc = allAdministered ? 'hoan_thanh' : 'da_cho_uong_mot_phan';
         return { ...prev, lichSuUongThuoc: updatedLichSu, trangThai: newStatus, ngayCapNhat: new Date().toISOString() };
      });
   };
@@ -157,31 +155,46 @@ const ManageMedicineRequestsPage: React.FC = () => {
       </div>
     );
   };
-
   return (
-    <div className='p-6 bg-white shadow-lg rounded-lg'>
-      <div className='flex justify-between items-center mb-6 border-b pb-3'>
-        <h2 className='text-3xl font-semibold text-blue-700'>Quản Lý Yêu Cầu Gửi Thuốc</h2>
-        <div>
-          <label htmlFor='statusFilter' className='text-sm mr-2'>Lọc theo trạng thái:</label>
-          <select
-            id='statusFilter'
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value as TrangThaiYeuCauThuoc | 'all')}
-            className='p-2 border rounded-md text-sm'
-          >
-            <option value='all'>Tất cả</option>
-            <option value='moi_tao'>Mới tạo</option>
-            <option value='da_xac_nhan_truong'>Đã xác nhận</option>
-            <option value='y_ta_da_nhan_thuoc'>Đã nhận thuốc</option>
-            <option value='dang_cho_uong'>Đang chờ uống</option>
-            <option value='da_cho_uong_mot_phan'>Đã cho uống (1 phần)</option>
-            <option value='hoan_thanh'>Hoàn thành</option>
-            <option value='da_huy'>Đã hủy</option>
-            <option value='tu_choi'>Từ chối</option>
-          </select>
+    <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6'>
+      <div className='max-w-7xl mx-auto'>
+        {/* Header */}
+        <div className='bg-white rounded-2xl shadow-xl p-8 mb-8 border border-blue-100'>
+          <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6'>
+            <div className='flex items-center space-x-4'>
+              <div className='p-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl'>
+                <Pill className='w-8 h-8 text-white' />
+              </div>
+              <div>
+                <h1 className='text-3xl font-bold text-gray-900'>Quản Lý Yêu Cầu Gửi Thuốc</h1>
+                <p className='text-gray-600 mt-1'>Theo dõi và xử lý yêu cầu gửi thuốc từ phụ huynh</p>
+              </div>
+            </div>
+            
+            {/* Filter Controls */}
+            <div className='flex items-center space-x-3 bg-gray-50 p-4 rounded-xl'>
+              <label htmlFor='statusFilter' className='text-sm font-medium text-gray-700'>
+                Lọc theo trạng thái:
+              </label>
+              <select
+                id='statusFilter'
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value as TrangThaiYeuCauThuoc | 'all')}
+                className='px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white'
+              >
+                <option value='all'>Tất cả</option>
+                <option value='moi_tao'>Mới tạo</option>
+                <option value='da_xac_nhan_truong'>Đã xác nhận</option>
+                <option value='y_ta_da_nhan_thuoc'>Đã nhận thuốc</option>
+                <option value='dang_cho_uong'>Đang chờ uống</option>
+                <option value='da_cho_uong_mot_phan'>Đã cho uống (1 phần)</option>
+                <option value='hoan_thanh'>Hoàn thành</option>
+                <option value='da_huy'>Đã hủy</option>
+                <option value='tu_choi'>Từ chối</option>
+              </select>
+            </div>
+          </div>
         </div>
-      </div>
 
       {filteredRequests.length === 0 ? (
         <p className='text-gray-600'>Không có yêu cầu nào phù hợp.</p>
@@ -231,7 +244,9 @@ const ManageMedicineRequestsPage: React.FC = () => {
           currentYTa={currentUser}
         />
       )}
+      {/* Close max-w-7xl and min-h-screen containers */}
     </div>
+  </div>
   );
 };
 

@@ -1,4 +1,4 @@
-import { HoSoSucKhoe, ThongTinTiemChung } from '../types';
+import type { HoSoSucKhoe } from '../types';
 
 export let mockHealthProfiles: HoSoSucKhoe[] = [
   {
@@ -57,7 +57,7 @@ export const updateHealthProfile = (profileId: string, updatedData: Partial<HoSo
       ngayCapNhatCuoi: new Date().toISOString(),
       idNguoiCapNhatCuoi: userId,
     };
-    console.log(\`Health profile ${profileId} updated by user ${userId}.\`);
+    console.log(`Health profile ${profileId} updated by user ${userId}.`);
     // TODO: Notify nurse if this option is enabled
     return true;
   }

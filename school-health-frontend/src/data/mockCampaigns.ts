@@ -1,4 +1,4 @@
-import { ChienDichTiemChung, KetQuaTiemChungHocSinh, TrangThaiChienDich, TrangThaiThamGiaTiemChung, ChienDichKhamSucKhoe, KetQuaKhamSucKhoeHocSinh } from '../types';
+import type { ChienDichTiemChung, KetQuaTiemChungHocSinh, TrangThaiChienDich, ChienDichKhamSucKhoe, KetQuaKhamSucKhoeHocSinh } from '../types';
 
 export let mockVaccinationCampaigns: ChienDichTiemChung[] = [
   {
@@ -55,7 +55,7 @@ export const updateCampaignStatus = (id: string, newStatus: TrangThaiChienDich, 
         campaign.ngayDuyet = new Date().toISOString();
     }
     if (newStatus === 'da_duyet') {
-        console.log(\`Campaign ${id} approved. Notifying parents of students in: ${campaign.doiTuongApDung}\`);
+        console.log(`Campaign ${id} approved. Notifying parents of students in: ${campaign.doiTuongApDung}`);
     }
     return true;
   }
@@ -64,7 +64,7 @@ export const updateCampaignStatus = (id: string, newStatus: TrangThaiChienDich, 
 
 export const addStudentVaccinationResult = (result: KetQuaTiemChungHocSinh) => {
     mockStudentVaccinationResults.push(result);
-    console.log(\`Vaccination result for student ${result.idHocSinh} in campaign ${result.idChienDichTiemChung} recorded. Notifying parent.\`);
+    console.log(`Vaccination result for student ${result.idHocSinh} in campaign ${result.idChienDichTiemChung} recorded. Notifying parent.`);
 };
 
 // --- Health Checkup Campaigns ---
@@ -132,7 +132,7 @@ export const updateHealthCheckupCampaignStatus = (id: string, newStatus: TrangTh
         campaign.ngayDuyet = new Date().toISOString();
     }
     if (newStatus === "da_duyet") {
-        console.log(\`Health Checkup Campaign ${id} approved. Notifying parents of students in: ${campaign.doiTuongApDung}\`);
+        console.log(`Health Checkup Campaign ${id} approved. Notifying parents of students in: ${campaign.doiTuongApDung}`);
     }
     return true;
   }
@@ -140,9 +140,8 @@ export const updateHealthCheckupCampaignStatus = (id: string, newStatus: TrangTh
 };
 
 export const addStudentHealthCheckupResult = (result: KetQuaKhamSucKhoeHocSinh) => {
-    mockStudentHealthCheckupResults.push(result);
-    console.log(\`Health checkup result for student ${result.idHocSinh} in campaign ${result.idChienDichKhamSucKhoe} recorded. Notifying parent.\`);
+    mockStudentHealthCheckupResults.push(result);    console.log(`Health checkup result for student ${result.idHocSinh} in campaign ${result.idChienDichKhamSucKhoe} recorded. Notifying parent.`);
     if (result.canHenLichTuVan) {
-        console.log(\`Student ${result.idHocSinh} needs consultation scheduling.\`);
+        console.log(`Student ${result.idHocSinh} needs consultation scheduling.`);
     }
 };

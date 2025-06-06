@@ -1,19 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import { Outlet } // For rendering nested routes
-from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 const AppLayout: React.FC = () => {
-  // Dummy user role for now - this will come from auth context later
-  const userRole = 'y_ta'; // Possible values: 'admin', 'y_ta', 'phu_huynh'
+  const { userRole } = useAuth();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const handleToggleSidebar = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
 
   return (
-    <div className='flex h-screen bg-gray-100'>
-      <Sidebar userRole={userRole} />
+    <div className='flex h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50'>
+      <Sidebar 
+        userRole={userRole || 'guest'} 
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={handleToggleSidebar}
+      />
       <div className='flex-1 flex flex-col overflow-hidden'>
-        <Header userRole={userRole} />
-        <main className='flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 p-6'>
+        <Header />
+        <main className='flex-1 overflow-x-hidden overflow-y-auto'>
           <Outlet /> {/* Child routes will render here */}
         </main>
       </div>

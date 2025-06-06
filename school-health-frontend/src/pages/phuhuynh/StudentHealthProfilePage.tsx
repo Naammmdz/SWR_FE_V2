@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { HocSinh, HoSoSucKhoe } from '../../types';
+import type { HocSinh, HoSoSucKhoe } from '../../types';
 import { getHealthProfileByStudentId } from '../../data/mockHealthProfiles';
 import { UserSquare2, Edit, ChevronDown, ChevronUp, HeartPulse, ShieldPlus, Droplets, Glasses, Ear, StickyNote } from 'lucide-react';
+import './StudentHealthProfilePage.css';
 
 // Assuming mockAllStudents is available or fetched based on parent
 // For this example, let's use a local mock or fetch via AuthContext if available
@@ -20,14 +21,13 @@ const StudentHealthProfilePage: React.FC = () => {
   const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
   const [healthProfile, setHealthProfile] = useState<HoSoSucKhoe | null | undefined>(null);
   const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     if (currentUser) {
       // In a real app, fetch children linked to currentUser.id
       const childrenOfCurrentUser = mockUserChildrenData.filter(c => c.idNguoiGiamHoChinh === currentUser.id);
       setUserChildren(childrenOfCurrentUser);
-      if (childrenOfCurrentUser.length > 0) {
-        // setSelectedChildId(childrenOfCurrentUser[0].id); // Auto-select first child
+      if (childrenOfCurrentUser.length === 1) {
+        setSelectedChildId(childrenOfCurrentUser[0].id); // Auto-select if only one child
       }
     }
   }, [currentUser]);
@@ -72,11 +72,8 @@ const StudentHealthProfilePage: React.FC = () => {
             {userChildren.map(child => (
               <option key={child.id} value={child.id}>{child.hoTen} - Lớp {child.lop}</option>
             ))}
-          </select>
-        </div>
+          </select>        </div>
       )}
-      {userChildren.length === 1 && !selectedChildId && setSelectedChildId(userChildren[0].id)}
-
 
       {loading && <p>Đang tải hồ sơ...</p>}
 
@@ -133,18 +130,9 @@ const StudentHealthProfilePage: React.FC = () => {
             </CollapsibleSection>
 
             <InfoRow icon={<StickyNote/>} label='Ghi chú khác:' value={healthProfile.ghiChuKhac || 'Không có'} multiline/>
-            <InfoRow label='Cập nhật lần cuối:' value={new Date(healthProfile.ngayCapNhatCuoi).toLocaleString('vi-VN') + ' bởi (ID: ' + healthProfile.idNguoiCapNhatCuoi + ')'} />
-          </div>
+            <InfoRow label='Cập nhật lần cuối:' value={new Date(healthProfile.ngayCapNhatCuoi).toLocaleString('vi-VN') + ' bởi (ID: ' + healthProfile.idNguoiCapNhatCuoi + ')'} />          </div>
         </div>
       )}
-      <style jsx global>{`
-        .label-style { display: block; font-size: 0.875rem; font-weight: 500; color: #374151; }
-        .input-style { display: block; width: 100%; padding: 0.5rem; border: 1px solid #D1D5DB; border-radius: 0.375rem; }
-        .btn-primary-outline { padding: 0.375rem 0.75rem; border: 1px solid #2563EB; color: #2563EB; border-radius: 0.375rem; }
-        .btn-primary-outline:hover { background-color: #EFF6FF; }
-        .btn-primary { padding: 0.5rem 1rem; background-color: #2563EB; color: white; border-radius: 0.375rem; font-weight: 500; }
-        .btn-primary:hover { background-color: #1D4ED8; }
-      `}</style>
     </div>
   );
 };
