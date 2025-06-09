@@ -1,5 +1,7 @@
 import React from 'react';
-import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import AppLayout from './components/layouts/AppLayout';
 import LoginPage from './pages/common/LoginPage';
 import DashboardPage from './pages/common/DashboardPage';
@@ -68,43 +70,57 @@ const ProtectedPageElement: React.FC<{element: React.ReactElement, allowedRoles?
 
 function App() {
   return (
-    <Routes>
-      <Route path='/' element={<HomePage />} />
-      <Route path='/login' element={<LoginPage />} />
+    <>
+      <Routes>
+        <Route path='/' element={<HomePage />} />
+        <Route path='/login' element={<LoginPage />} />
 
-      <Route element={<ProtectedRouteElement />}>
-        <Route path='/dashboard' element={<ProtectedPageElement element={<DashboardPage />} />} />
-        <Route path='/thong-bao' element={<ProtectedPageElement element={<NotificationsPage />} />} />
-        <Route path='/ho-so-ca-nhan' element={<ProtectedPageElement element={<UserProfilePage />} />} />
+        <Route element={<ProtectedRouteElement />}>
+          <Route path='/dashboard' element={<ProtectedPageElement element={<DashboardPage />} />} />
+          <Route path='/thong-bao' element={<ProtectedPageElement element={<NotificationsPage />} />} />
+          <Route path='/ho-so-ca-nhan' element={<ProtectedPageElement element={<UserProfilePage />} />} />
 
-        {/* Admin Routes */}
-        <Route path='/admin/nguoi-dung' element={<ProtectedPageElement element={<ManageUsersPage />} allowedRoles={['admin']} />} />
-        <Route path='/admin/chien-dich' element={<ProtectedPageElement element={<ManageCampaignsPage />} allowedRoles={['admin']} />} />
-        <Route path='/admin/chien-dich/tiem-chung/tao-moi' element={<ProtectedPageElement element={<CreateVaccinationCampaignPage />} allowedRoles={['admin', 'y_ta']} />} />
-        <Route path='/admin/chien-dich/kham-suc-khoe/tao-moi' element={<ProtectedPageElement element={<CreateHealthCheckupCampaignPage />} allowedRoles={['admin', 'y_ta']} />} />
-        <Route path='/admin/bao-cao' element={<ProtectedPageElement element={<ReportsPage />} allowedRoles={['admin']} />} />
-        <Route path='/admin/cau-hinh' element={<ProtectedPageElement element={<SystemConfigPage />} allowedRoles={['admin']} />} />
+          {/* Admin Routes */}
+          <Route path='/admin/nguoi-dung' element={<ProtectedPageElement element={<ManageUsersPage />} allowedRoles={['admin']} />} />
+          <Route path='/admin/chien-dich' element={<ProtectedPageElement element={<ManageCampaignsPage />} allowedRoles={['admin']} />} />
+          <Route path='/admin/chien-dich/tiem-chung/tao-moi' element={<ProtectedPageElement element={<CreateVaccinationCampaignPage />} allowedRoles={['admin', 'y_ta']} />} />
+          <Route path='/admin/chien-dich/kham-suc-khoe/tao-moi' element={<ProtectedPageElement element={<CreateHealthCheckupCampaignPage />} allowedRoles={['admin', 'y_ta']} />} />
+          <Route path='/admin/bao-cao' element={<ProtectedPageElement element={<ReportsPage />} allowedRoles={['admin']} />} />
+          <Route path='/admin/cau-hinh' element={<ProtectedPageElement element={<SystemConfigPage />} allowedRoles={['admin']} />} />
 
-        {/* Y Tá Routes */}
-        <Route path='/y-ta/yeu-cau-thuoc' element={<ProtectedPageElement element={<ManageMedicineRequestsPage />} allowedRoles={['y_ta', 'admin']} />} />
-        <Route path='/y-ta/su-co-y-te/danh-sach' element={<ProtectedPageElement element={<HealthEventsListPage />} allowedRoles={['y_ta', 'admin']} />} />
-        <Route path='/y-ta/su-co-y-te' element={<ProtectedPageElement element={<RecordHealthEventPage />} allowedRoles={['y_ta', 'admin']} />} />
-        <Route path='/y-ta/kho-thuoc-vat-tu' element={<ProtectedPageElement element={<ManageInventoryPage />} allowedRoles={['y_ta', 'admin']} />} />
-        <Route path='/y-ta/kho-thuoc-vat-tu/lich-su-xuat-nhap' element={<ProtectedPageElement element={<InventoryLogPage />} allowedRoles={['y_ta', 'admin']} />} />
-        <Route path='/y-ta/tiem-chung' element={<ProtectedPageElement element={<ManageVaccinationPage />} allowedRoles={['y_ta', 'admin']} />} />
-        <Route path='/y-ta/kham-suc-khoe' element={<ProtectedPageElement element={<ManageHealthCheckupPage />} allowedRoles={['y_ta', 'admin']} />} />
-        <Route path='/y-ta/tra-cuu-hoc-sinh' element={<ProtectedPageElement element={<SearchStudentRecordsPage />} allowedRoles={['y_ta', 'admin']} />} />
+          {/* Y Tá Routes */}
+          <Route path='/y-ta/yeu-cau-thuoc' element={<ProtectedPageElement element={<ManageMedicineRequestsPage />} allowedRoles={['y_ta', 'admin']} />} />
+          <Route path='/y-ta/su-co-y-te/danh-sach' element={<ProtectedPageElement element={<HealthEventsListPage />} allowedRoles={['y_ta', 'admin']} />} />
+          <Route path='/y-ta/su-co-y-te' element={<ProtectedPageElement element={<RecordHealthEventPage />} allowedRoles={['y_ta', 'admin']} />} />
+          <Route path='/y-ta/kho-thuoc-vat-tu' element={<ProtectedPageElement element={<ManageInventoryPage />} allowedRoles={['y_ta', 'admin']} />} />
+          <Route path='/y-ta/kho-thuoc-vat-tu/lich-su-xuat-nhap' element={<ProtectedPageElement element={<InventoryLogPage />} allowedRoles={['y_ta', 'admin']} />} />
+          <Route path='/y-ta/tiem-chung' element={<ProtectedPageElement element={<ManageVaccinationPage />} allowedRoles={['y_ta', 'admin']} />} />
+          <Route path='/y-ta/kham-suc-khoe' element={<ProtectedPageElement element={<ManageHealthCheckupPage />} allowedRoles={['y_ta', 'admin']} />} />
+          <Route path='/y-ta/tra-cuu-hoc-sinh' element={<ProtectedPageElement element={<SearchStudentRecordsPage />} allowedRoles={['y_ta', 'admin']} />} />
 
-        {/* Phụ Huynh Routes */}
-        <Route path='/phu-huynh/ho-so-con' element={<ProtectedPageElement element={<StudentHealthProfilePage />} allowedRoles={['phu_huynh', 'admin']} />} />
-        <Route path='/phu-huynh/ho-so-con/:studentId/chinh-sua' element={<ProtectedPageElement element={<EditStudentHealthProfilePage />} allowedRoles={['phu_huynh', 'admin']} />} /> {/* New */}
-        <Route path='/phu-huynh/ho-so-con/:studentId/tao-moi' element={<ProtectedPageElement element={<EditStudentHealthProfilePage />} allowedRoles={['phu_huynh', 'admin']} />} /> {/* New, uses same edit page */}
-        <Route path='/phu-huynh/gui-thuoc' element={<ProtectedPageElement element={<SubmitMedicineRequestPage />} allowedRoles={['phu_huynh', 'admin']} />} />
-        <Route path='/phu-huynh/gui-thuoc/tao-moi' element={<ProtectedPageElement element={<CreateMedicineRequestPage />} allowedRoles={['phu_huynh', 'admin']} />} />
-      </Route>
+          {/* Phụ Huynh Routes */}
+          <Route path='/phu-huynh/ho-so-con' element={<ProtectedPageElement element={<StudentHealthProfilePage />} allowedRoles={['phu_huynh', 'admin']} />} />
+          <Route path='/phu-huynh/ho-so-con/:studentId/chinh-sua' element={<ProtectedPageElement element={<EditStudentHealthProfilePage />} allowedRoles={['phu_huynh', 'admin']} />} /> {/* New */}
+          <Route path='/phu-huynh/ho-so-con/:studentId/tao-moi' element={<ProtectedPageElement element={<EditStudentHealthProfilePage />} allowedRoles={['phu_huynh', 'admin']} />} /> {/* New, uses same edit page */}
+          <Route path='/phu-huynh/gui-thuoc' element={<ProtectedPageElement element={<SubmitMedicineRequestPage />} allowedRoles={['phu_huynh', 'admin']} />} />
+          <Route path='/phu-huynh/gui-thuoc/tao-moi' element={<ProtectedPageElement element={<CreateMedicineRequestPage />} allowedRoles={['phu_huynh', 'admin']} />} />
+        </Route>
 
-      <Route path='*' element={<NotFoundPage />} />
-    </Routes>
+        <Route path='*' element={<NotFoundPage />} />
+      </Routes>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+    </>
   );
 }
 

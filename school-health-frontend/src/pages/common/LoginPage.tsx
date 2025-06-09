@@ -17,68 +17,29 @@ import {
 import type { NguoiDung, VaiTroNguoiDung } from '../../types';
 
 const LoginPage: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [emailOrPhone, setEmailOrPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
     try {
-      // Simulate loading delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Mock authentication
-      if (username === 'admin' && password === 'admin') {
-        const adminUser: NguoiDung = {
-          id: 'admin001',
-          tenDangNhap: 'admin',
-          vaiTro: 'admin',
-          thongTinCaNhan: { hoTen: 'Quản Trị Viên Chính' },
-          idTruongHoc: 'TH001',
-          ngayTao: new Date().toISOString(),
-          trangThai: 'hoat_dong',
-        };
-        login(adminUser);
-        navigate('/dashboard');
-      } else if (username === 'yta' && password === 'yta') {
-        const ytaUser: NguoiDung = {
-          id: 'yta001',
-          tenDangNhap: 'yta',
-          vaiTro: 'y_ta',
-          thongTinCaNhan: { hoTen: 'Y Tá Trần Thị B' },
-          idTruongHoc: 'TH001',
-          ngayTao: new Date().toISOString(),
-          trangThai: 'hoat_dong',
-        };
-        login(ytaUser);
-        navigate('/dashboard');
-      } else if (username === 'phuhuynh' && password === 'phuhuynh') {
-        const phuhuynhUser: NguoiDung = {
-          id: 'ph001',
-          tenDangNhap: 'phuhuynh',
-          vaiTro: 'phu_huynh',
-          thongTinCaNhan: { hoTen: 'Phụ Huynh Nguyễn Văn A' },
-          idTruongHoc: 'TH001',
-          ngayTao: new Date().toISOString(),
-          trangThai: 'hoat_dong',
-        };
-        login(phuhuynhUser);
-        navigate('/dashboard');
-      } else {
-        setError('Tên đăng nhập hoặc mật khẩu không đúng.');
-      }
+      await login(emailOrPhone, password);
+      navigate('/dashboard');
     } catch (err) {
-      setError('Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại.');
+      setError(err instanceof Error ? err.message : 'Đăng nhập thất bại');
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
     <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center relative overflow-hidden'>
       {/* Background decorations */}
@@ -181,10 +142,10 @@ const LoginPage: React.FC = () => {
               </div>
 
               <form onSubmit={handleLogin} className='space-y-6'>
-                {/* Username field */}
+                {/* Email/Phone field */}
                 <div>
-                  <label className='block text-gray-700 text-sm font-semibold mb-3' htmlFor='username'>
-                    Tên đăng nhập
+                  <label className='block text-gray-700 text-sm font-semibold mb-3' htmlFor='emailOrPhone'>
+                    Email hoặc số điện thoại
                   </label>
                   <div className='relative'>
                     <div className='absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none'>
@@ -192,11 +153,11 @@ const LoginPage: React.FC = () => {
                     </div>
                     <input
                       type='text'
-                      id='username'
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      id='emailOrPhone'
+                      value={emailOrPhone}
+                      onChange={(e) => setEmailOrPhone(e.target.value)}
                       className='w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-gray-50 focus:bg-white'
-                      placeholder='Nhập tên đăng nhập'
+                      placeholder='Nhập email hoặc số điện thoại'
                       required
                     />
                   </div>

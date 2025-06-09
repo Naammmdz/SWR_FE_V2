@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { 
+import { userService } from '../../services/userService';
+import {
   UserCircle, 
   Mail, 
   Phone, 
@@ -17,6 +18,54 @@ import {
 const UserProfilePage: React.FC = () => {
   const { currentUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  // Form state
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: ''
+  });
+
+  useEffect(() => {
+    loadUserProfile();
+  }, []);
+
+  const loadUserProfile = async () => {
+    try {
+      const profile = await userService.getMyProfile();
+      setFormData({
+        fullName: profile.fullName,
+        email: profile.email,
+        phone: profile.phone
+      });
+    } catch (err) {
+      setError('Không thể tải thông tin người dùng');
+    }
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      await userService.updateMyProfile({
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone
+      });
+      setSuccess('Cập nhật thông tin thành công');
+      setIsEditing(false);
+      loadUserProfile(); // Reload user data
+    } catch (err) {
+      setError('Cập nhật thông tin thất bại');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!currentUser) {
     return (
@@ -80,6 +129,20 @@ const UserProfilePage: React.FC = () => {
               )}
             </button>
           </div>
+
+          {/* Success message */}
+          {success && (
+            <div className='mb-4 p-4 bg-green-50 border border-green-200 rounded-xl'>
+              <p className='text-green-700'>{success}</p>
+            </div>
+          )}
+
+          {/* Error message */}
+          {error && (
+            <div className='mb-4 p-4 bg-red-50 border border-red-200 rounded-xl'>
+              <p className='text-red-700'>{error}</p>
+            </div>
+          )}
 
           {/* Profile Header */}
           <div className='flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-8'>
@@ -248,9 +311,17 @@ const UserProfilePage: React.FC = () => {
         {/* Save Button */}
         {isEditing && (
           <div className='mt-8 text-center'>
-            <button className='inline-flex items-center px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg'>
-              <Save className='mr-2' size={20}/>
-              Lưu thay đổi
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className='inline-flex items-center px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg disabled:opacity-50'
+            >
+              {loading ? 'Đang lưu...' : (
+                <>
+                  <Save className='mr-2' size={20}/>
+                  Lưu thay đổi
+                </>
+              )}
             </button>
           </div>
         )}
