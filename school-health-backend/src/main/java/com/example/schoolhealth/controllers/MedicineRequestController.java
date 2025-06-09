@@ -1,16 +1,19 @@
 package com.example.schoolhealth.controllers;
 
-import com.example.schoolhealth.dtos.MedicineActionDTO;
+// Removed MedicineActionDTO import
 import com.example.schoolhealth.dtos.MedicineRequestDTO;
 import com.example.schoolhealth.services.MedicineRequestService;
+import com.example.schoolhealth.exceptions.ResourceNotFoundException; // Added ResourceNotFoundException
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin; // Added CrossOrigin
 
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173") // Added CrossOrigin
 @RequestMapping("/api/medicine-requests")
 public class MedicineRequestController {
 
@@ -24,31 +27,42 @@ public class MedicineRequestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<MedicineRequestDTO> getMedicineRequestById(@PathVariable Long id) {
-        MedicineRequestDTO requestDTO = medicineRequestService.getMedicineRequestById(id);
-        return ResponseEntity.ok(requestDTO);
+        try {
+            MedicineRequestDTO requestDTO = medicineRequestService.getMedicineRequestById(id);
+            return ResponseEntity.ok(requestDTO);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<MedicineRequestDTO> createMedicineRequest(@RequestBody MedicineRequestDTO requestDTO) {
+        // idPhuHuynhGui and idHocSinh must be set in requestDTO from client
         MedicineRequestDTO createdRequest = medicineRequestService.createMedicineRequest(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRequest);
     }
 
     @PutMapping("/{id}/approve")
-    public ResponseEntity<MedicineRequestDTO> approveMedicineRequest(@PathVariable Long id, @RequestBody MedicineActionDTO actionDTO) {
-        // Assuming actionDTO.getUserId() contains the ID of the user approving
-        // In a real app, this might come from the authenticated user's security context
-        MedicineRequestDTO approvedRequest = medicineRequestService.approveMedicineRequest(id, actionDTO.getUserId());
-        return ResponseEntity.ok(approvedRequest);
+    public ResponseEntity<MedicineRequestDTO> approveMedicineRequest(@PathVariable Long id, @RequestParam String approverUserId) {
+        try {
+            MedicineRequestDTO approvedRequest = medicineRequestService.approveMedicineRequest(id, approverUserId);
+            return ResponseEntity.ok(approvedRequest);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @PutMapping("/{id}/reject")
-    public ResponseEntity<MedicineRequestDTO> rejectMedicineRequest(@PathVariable Long id, @RequestBody MedicineActionDTO actionDTO) {
-        // Assuming actionDTO.getUserId() contains the ID of the user rejecting
-        // And actionDTO.getNotes() contains the reason for rejection
-        MedicineRequestDTO rejectedRequest = medicineRequestService.rejectMedicineRequest(id, actionDTO.getUserId(), actionDTO.getNotes());
-        return ResponseEntity.ok(rejectedRequest);
+    public ResponseEntity<MedicineRequestDTO> rejectMedicineRequest(@PathVariable Long id,
+                                                                    @RequestParam String rejecterUserId,
+                                                                    @RequestParam String reason) {
+        try {
+            MedicineRequestDTO rejectedRequest = medicineRequestService.rejectMedicineRequest(id, rejecterUserId, reason);
+            return ResponseEntity.ok(rejectedRequest);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     // Endpoint to get requests by student ID, if needed directly on this controller

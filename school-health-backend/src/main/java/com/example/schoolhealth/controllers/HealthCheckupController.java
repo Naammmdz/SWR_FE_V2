@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin; // Added CrossOrigin
+import com.example.schoolhealth.exceptions.ResourceNotFoundException; // Added ResourceNotFoundException
 
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173") // Added CrossOrigin
 @RequestMapping("/api/health-checkups")
 public class HealthCheckupController {
 
@@ -30,28 +33,32 @@ public class HealthCheckupController {
 
     @GetMapping("/{id}")
     public ResponseEntity<HealthCheckupDTO> getHealthCheckupById(@PathVariable Long id) {
-        HealthCheckupDTO checkupDTO = healthCheckupService.getHealthCheckupById(id);
-        return ResponseEntity.ok(checkupDTO);
+        try {
+            HealthCheckupDTO checkupDTO = healthCheckupService.getHealthCheckupById(id);
+            return ResponseEntity.ok(checkupDTO);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<HealthCheckupDTO> updateHealthCheckup(@PathVariable Long id, @RequestBody HealthCheckupDTO checkupDTO) {
-        HealthCheckupDTO updatedCheckup = healthCheckupService.updateHealthCheckup(id, checkupDTO);
-        return ResponseEntity.ok(updatedCheckup);
+        try {
+            HealthCheckupDTO updatedCheckup = healthCheckupService.updateHealthCheckup(id, checkupDTO);
+            return ResponseEntity.ok(updatedCheckup);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteHealthCheckup(@PathVariable Long id) {
-        healthCheckupService.deleteHealthCheckup(id);
-        return ResponseEntity.noContent().build();
+        try {
+            healthCheckupService.deleteHealthCheckup(id);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
-
-    // This endpoint is typically in StudentController, like GET /api/students/{studentId}/health-checkups
-    // If a direct endpoint on HealthCheckupController is desired for fetching by studentId:
-    @GetMapping("/student/{studentId}")
-    public ResponseEntity<List<HealthCheckupDTO>> getHealthCheckupsByStudentId(@PathVariable Long studentId) {
-        List<HealthCheckupDTO> checkups = healthCheckupService.getHealthCheckupsByStudentId(studentId);
-        return ResponseEntity.ok(checkups);
-    }
+    // Removed getHealthCheckupsByStudentId as it's not relevant to campaign management here
 }

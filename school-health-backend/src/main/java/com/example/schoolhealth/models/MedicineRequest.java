@@ -1,11 +1,17 @@
 package com.example.schoolhealth.models;
 
-import jakarta.persistence.*;
 import lombok.Data;
-import java.time.LocalDate;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "medicine_requests")
 public class MedicineRequest {
 
@@ -13,31 +19,48 @@ public class MedicineRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String medicineName;
-    private String dosage; // e.g., "1 tablet", "10ml"
-    private String frequency; // e.g., "Twice a day", "As needed"
-
-    @Column(columnDefinition = "TEXT")
-    private String reason; // Reason for medication
-
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private LocalDate requestDate; // Date the request was made
-    private String status; // e.g., "PENDING", "APPROVED", "REJECTED", "COMPLETED"
-
-    @Column(columnDefinition = "TEXT")
-    private String parentNotes;
-    @Column(columnDefinition = "TEXT")
-    private String staffNotes; // Notes from school staff/nurse
-
-    private String approvedBy; // User ID or name of staff who approved/rejected
-    private LocalDate approvedDate; // Date of approval/rejection
-    private String schoolId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
-    // Using String for requesterParentId as decided for simplicity
-    private String requesterParentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "requesting_parent_id", nullable = false)
+    private User requestingParent; // Changed name from parent to requestingParent
+
+    private String medicineName; // tenThuoc
+    private String dosage; // hamLuong
+    private String unit; // donViTinh
+    private Double quantityPerDose; // soLuongMoiLanUong
+    private String doseUnit; // donViUong
+    private String routeOfAdministration; // duongDung
+
+    @Lob
+    private String usageInstructions; // huongDanSuDung
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "medicine_request_planned_schedules", joinColumns = @JoinColumn(name = "medicine_request_id"))
+    @Column(name = "planned_time")
+    private List<LocalDateTime> plannedSchedule; // thoiGianKeHoachUong
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "medicine_request_medication_log", joinColumns = @JoinColumn(name = "medicine_request_id"))
+    private List<MedicationLogEntryEmbeddable> medicationLog; // lichSuUongThuoc
+
+    private String prescriptionUrl; // donThuocUrl
+
+    @Lob
+    private String parentNotes; // ghiChuPhuHuynh
+
+    private String emergencyContact; // lienHeKhanCap
+    private String status; // trangThai
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "processing_nurse_id", nullable = true)
+    private User processingNurse; // idYTaXuLy (assignedNurse)
+
+    @Lob
+    private String rejectionOrCancellationReason; // lyDoHuyHoacTuChoi (nullable)
+
+    private LocalDateTime createdAt; // ngayTao
+    private LocalDateTime updatedAt; // ngayCapNhat
 }

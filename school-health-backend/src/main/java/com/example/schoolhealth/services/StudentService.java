@@ -3,10 +3,13 @@ package com.example.schoolhealth.services;
 import com.example.schoolhealth.dtos.HealthRecordDTO;
 import com.example.schoolhealth.dtos.StudentDTO;
 import com.example.schoolhealth.dtos.HealthCheckupDTO;
-import com.example.schoolhealth.dtos.MedicineRequestDTO; // Added import
+import com.example.schoolhealth.dtos.MedicineRequestDTO;
 import com.example.schoolhealth.exceptions.ResourceNotFoundException;
 import com.example.schoolhealth.models.Student;
+import com.example.schoolhealth.models.User; // Added User import
+import com.example.schoolhealth.models.HealthRecord; // Added HealthRecord import
 import com.example.schoolhealth.repositories.StudentRepository;
+import com.example.schoolhealth.repositories.UserRepository; // Added UserRepository import
 import org.modelmapper.ModelMapper;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -21,6 +24,9 @@ public class StudentService {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private UserRepository userRepository; // Added UserRepository
 
     @Autowired
     private HealthRecordService healthRecordService;
@@ -49,7 +55,7 @@ public class StudentService {
                     dto.setLop(student.getClassName());
                     dto.setIdTruongHoc(student.getSchoolId());
                     if (student.getParent() != null) {
-                        dto.setIdNguoiGiamHoChinh(student.getParent().getId());
+                        dto.setIdNguoiGiamHoChinh(student.getParent().getId().toString()); // Ensured String ID
                     }
                     if (student.getHealthRecord() != null) {
                         dto.setIdHoSoSucKhoe(student.getHealthRecord().getId().toString());
@@ -72,7 +78,7 @@ public class StudentService {
         dto.setLop(student.getClassName());
         dto.setIdTruongHoc(student.getSchoolId());
         if (student.getParent() != null) {
-            dto.setIdNguoiGiamHoChinh(student.getParent().getId());
+            dto.setIdNguoiGiamHoChinh(student.getParent().getId().toString()); // Ensured String ID
         }
         if (student.getHealthRecord() != null) {
             dto.setIdHoSoSucKhoe(student.getHealthRecord().getId().toString());
@@ -91,11 +97,38 @@ public class StudentService {
         student.setGender(studentDTO.getGioiTinh());
         student.setClassName(studentDTO.getLop());
         student.setSchoolId(studentDTO.getIdTruongHoc());
-        // Assuming parent User and other relations are handled elsewhere or via IDs
-        // e.g., fetching User by idNguoiGiamHoChinh if necessary
+
+        // Set parent User
+        if (studentDTO.getIdNguoiGiamHoChinh() != null && !studentDTO.getIdNguoiGiamHoChinh().isEmpty()) {
+            User parent = userRepository.findById(Long.parseLong(studentDTO.getIdNguoiGiamHoChinh()))
+                    .orElseThrow(() -> new ResourceNotFoundException("Parent User not found with id: " + studentDTO.getIdNguoiGiamHoChinh()));
+            student.setParent(parent);
+        }
+
+        // Initialize and associate HealthRecord for a new student
+        HealthRecord newHealthRecord = new HealthRecord();
+        student.setHealthRecord(newHealthRecord);
+        newHealthRecord.setStudent(student); // Ensure bi-directional relationship
 
         Student savedStudent = studentRepository.save(student);
-        return modelMapper.map(savedStudent, StudentDTO.class);
+
+        // Map back to DTO, ensuring all relevant fields are populated correctly
+        StudentDTO resultDTO = modelMapper.map(savedStudent, StudentDTO.class); // Base mapping
+        resultDTO.setHoTen(savedStudent.getFullName());
+        resultDTO.setMaHocSinh(savedStudent.getStudentCode());
+        if (savedStudent.getDateOfBirth() != null) {
+            resultDTO.setNgaySinh(savedStudent.getDateOfBirth().format(DateTimeFormatter.ISO_DATE));
+        }
+        resultDTO.setGioiTinh(savedStudent.getGender());
+        resultDTO.setLop(savedStudent.getClassName());
+        resultDTO.setIdTruongHoc(savedStudent.getSchoolId());
+        if (savedStudent.getParent() != null) {
+            resultDTO.setIdNguoiGiamHoChinh(savedStudent.getParent().getId().toString());
+        }
+        if (savedStudent.getHealthRecord() != null) {
+            resultDTO.setIdHoSoSucKhoe(savedStudent.getHealthRecord().getId().toString());
+        }
+        return resultDTO;
     }
 
     public StudentDTO updateStudent(Long id, StudentDTO studentDTO) {
@@ -111,10 +144,21 @@ public class StudentService {
         existingStudent.setGender(studentDTO.getGioiTinh());
         existingStudent.setClassName(studentDTO.getLop());
         existingStudent.setSchoolId(studentDTO.getIdTruongHoc());
-        // Update relationships if necessary (e.g., parent)
+
+        // Update parent User if changed
+        if (studentDTO.getIdNguoiGiamHoChinh() != null && !studentDTO.getIdNguoiGiamHoChinh().isEmpty()) {
+            if (existingStudent.getParent() == null || !existingStudent.getParent().getId().toString().equals(studentDTO.getIdNguoiGiamHoChinh())) {
+                User parent = userRepository.findById(Long.parseLong(studentDTO.getIdNguoiGiamHoChinh()))
+                        .orElseThrow(() -> new ResourceNotFoundException("Parent User not found with id: " + studentDTO.getIdNguoiGiamHoChinh()));
+                existingStudent.setParent(parent);
+            }
+        } else {
+            existingStudent.setParent(null); // Allow unsetting parent
+        }
 
         Student updatedStudent = studentRepository.save(existingStudent);
         StudentDTO resultDTO = modelMapper.map(updatedStudent, StudentDTO.class);
+
         resultDTO.setHoTen(updatedStudent.getFullName());
         resultDTO.setMaHocSinh(updatedStudent.getStudentCode());
         if (updatedStudent.getDateOfBirth() != null) {
@@ -123,8 +167,10 @@ public class StudentService {
         resultDTO.setGioiTinh(updatedStudent.getGender());
         resultDTO.setLop(updatedStudent.getClassName());
         resultDTO.setIdTruongHoc(updatedStudent.getSchoolId());
-         if (updatedStudent.getParent() != null) {
-            resultDTO.setIdNguoiGiamHoChinh(updatedStudent.getParent().getId());
+        if (updatedStudent.getParent() != null) {
+            resultDTO.setIdNguoiGiamHoChinh(updatedStudent.getParent().getId().toString());
+        } else {
+            resultDTO.setIdNguoiGiamHoChinh(null);
         }
         if (updatedStudent.getHealthRecord() != null) {
             resultDTO.setIdHoSoSucKhoe(updatedStudent.getHealthRecord().getId().toString());

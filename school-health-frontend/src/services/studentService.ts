@@ -1,45 +1,28 @@
 import api from './api';
-import { Student, HealthRecord, HealthCheckup, MedicineRequest } from '../types'; // Adjust path as needed if types are in a different location
-
-// Assuming HealthCheckup and MedicineRequest types are defined in ../types
-// If not, they might be 'any' for now or need to be added by the FE team.
+import {
+  HocSinh,
+  HoSoSucKhoe,
+  KetQuaKhamSucKhoeHocSinh, // Assuming this is the correct type for student's checkup results
+  YeuCauGuiThuoc
+} from '../types';
 
 export const studentService = {
-  getAllStudents: (): Promise<Student[]> => {
-    return api.get('/students');
-  },
+  getAllStudents: () => api.get<HocSinh[]>('/students'),
 
-  getStudent: (id: string): Promise<Student> => {
-    return api.get(`/students/${id}`);
-  },
+  getStudent: (id: string) => api.get<HocSinh>(`/students/${id}`),
 
-  createStudent: (studentData: Omit<Student, 'id'>): Promise<Student> => {
-    return api.post('/students', studentData);
-  },
+  createStudent: (studentData: Partial<HocSinh>) => api.post<HocSinh>('/students', studentData),
 
-  updateStudent: (id: string, studentData: Partial<Student>): Promise<Student> => {
-    return api.put(`/students/${id}`, studentData);
-  },
+  updateStudent: (id: string, studentData: Partial<HocSinh>) => api.put<HocSinh>(`/students/${id}`, studentData),
 
-  deleteStudent: (id: string): Promise<void> => {
-    return api.delete(`/students/${id}`);
-  },
+  deleteStudent: (id: string) => api.delete<void>(`/students/${id}`),
 
-  getHealthRecord: (studentId: string): Promise<HealthRecord> => {
-    return api.get(`/students/${studentId}/health-record`);
-  },
+  getHealthRecord: (studentId: string) => api.get<HoSoSucKhoe>(`/students/${studentId}/health-record`),
 
-  updateHealthRecord: (studentId: string, data: Partial<HealthRecord>): Promise<HealthRecord> => {
-    // Backend's HealthRecordDTO for update might not require studentId in the body,
-    // as it's part of the path. 'data' should represent the fields that can be updated.
-    return api.put(`/students/${studentId}/health-record`, data);
-  },
+  updateHealthRecord: (studentId: string, data: Partial<HoSoSucKhoe>) =>
+    api.put<HoSoSucKhoe>(`/students/${studentId}/health-record`, data),
 
-  getStudentHealthCheckups: (studentId: string): Promise<HealthCheckup[]> => {
-    return api.get(`/students/${studentId}/health-checkups`);
-  },
+  getStudentHealthCheckups: (studentId: string) => api.get<KetQuaKhamSucKhoeHocSinh[]>(`/students/${studentId}/health-checkups`),
 
-  getStudentMedicineRequests: (studentId: string): Promise<MedicineRequest[]> => {
-    return api.get(`/students/${studentId}/medicine-requests`);
-  },
+  getStudentMedicineRequests: (studentId: string) => api.get<YeuCauGuiThuoc[]>(`/students/${studentId}/medicine-requests`),
 };

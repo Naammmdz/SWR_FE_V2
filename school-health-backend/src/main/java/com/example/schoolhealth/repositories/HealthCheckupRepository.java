@@ -4,9 +4,10 @@ import com.example.schoolhealth.models.HealthCheckup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface HealthCheckupRepository extends JpaRepository<HealthCheckup, Long> {
-    List<HealthCheckup> findByStudentId(Long studentId);
+    // Custom query methods specific to health checkup campaigns can be added here if needed.
+    // For example:
+    // List<HealthCheckup> findByStatus(String status);
+    // List<HealthCheckup> findByExpectedDateBetween(LocalDate startDate, LocalDate endDate);
 }

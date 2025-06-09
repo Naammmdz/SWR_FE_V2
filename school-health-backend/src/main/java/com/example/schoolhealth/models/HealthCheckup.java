@@ -1,43 +1,52 @@
 package com.example.schoolhealth.models;
 
-import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
-@Table(name = "health_checkups")
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "health_checkup_campaigns") // Renamed table to avoid conflict if an old 'health_checkups' table for individual records exists
 public class HealthCheckup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate checkupDate;
-    private Double height; // in cm
-    private Double weight; // in kg
-    private Double bmi; // Calculated: weight (kg) / (height (m))^2
+    private String checkupName; // tenChienDich
 
-    private String visionLeft; // e.g., "20/20"
-    private String visionRight;
+    @ElementCollection
+    @CollectionTable(name = "health_checkup_types", joinColumns = @JoinColumn(name = "health_checkup_campaign_id"))
+    @Column(name = "checkup_type")
+    private List<String> checkupTypes; // loaiKham
 
-    private String hearingLeft; // e.g., "Normal"
-    private String hearingRight;
+    private String targetAudience; // doiTuongApDung
+    private LocalDate expectedDate; // thoiGianDuKien
+    private String location; // diaDiemKham
+    private String performingUnit; // donViThucHienKham
 
-    private String dentalHealth; // e.g., "Good", "Cavities Found"
-    private String scoliosis; // e.g., "Not Detected", "Suspected"
+    @Lob
+    private String generalNotes; // ghiChuChung
 
-    @Column(columnDefinition = "TEXT")
-    private String otherObservations;
-    @Column(columnDefinition = "TEXT")
-    private String recommendations;
-
-    private String doctorName;
-    private String location; // e.g., "School Clinic", "City Hospital"
-    private String eventType; // "ROUTINE_CHECKUP", "EMERGENCY", etc.
-    private String schoolId;
+    private String status; // trangThai (e.g., PLANNED, APPROVED, IN_PROGRESS, COMPLETED, CANCELLED)
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id", nullable = false)
-    private Student student;
+    @JoinColumn(name = "created_by_user_id")
+    private User createdBy; // idNguoiTao
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approved_by_user_id", nullable = true)
+    private User approvedBy; // idNguoiDuyet
+
+    private LocalDate createdAt; // ngayTao
+    private LocalDate approvedAt; // ngayDuyet (nullable)
+
+    @Lob
+    private String cancellationReason; // lyDoHuy (nullable)
 }
